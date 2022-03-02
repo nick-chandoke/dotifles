@@ -1,0 +1,219 @@
+# COMMENTS CAN ONLY BE AT THE BEGINNING OF A LINE
+# NB. swaymsg does not work within tmux!
+# type Container := Leaf    Window
+#                 | VSplit  [Container]
+#                 | HSplit  [Container]
+#                 | USplit  [Container] -- unspecified split
+#                 | Tabbed  [Container]
+#                 | Stacked [Container]
+# vertical for vsplit and stacked; horizontal for hsplit and tabbed.
+# empty Containers are removed. to move a leaf up a level, just move it horizontally or vertically; this will naturally make its container empty, and it will then be removed.
+# hsplit means columns; vsplit means rows.
+# "splitting" a Container means putting it into a singleton list then applying to a constructor. spawning windows then adds into that list. Containers are laid top to bottom and left to right.
+# workspaces are Containers. i3's (and so sway's, right?) tree is a single tree rather than a forest. thus all workspaces share a common parent.
+
+# $super: super. $alt: Alt. ctrl? shift?
+
+# TODO:
+# * use `swap container with` somewhere
+# * maybe i should include window borders for urgency events. remember that smart_borders is a thing.
+# * make interactively editable list of workspaces, including their names
+# like <C-h>q in tmux (or maybe even better: f in vimium,) i want to choose windows by id rather than navigating across Containers.
+# following windows are floating: gimp, zenity, gtdialog, matplotlib
+# enable grid layout
+# $super+tab moves to last-focused window, or if no such window (b/c it's been closed,) then move to nearest window in tree. like back_and_forth for containers.
+
+# see sway(5) for complete reference. (no need to look at i3 docs!)
+# all state and external functionality (cf data, which is owned by sway) may be stored
+# and processed in a child process of sway created specifically for adding extra functionality
+# that sway does not provide.
+
+# to specify a font: font pango:FontName[, AltFontName]* Size
+
+# GLOBAL OPTIONS
+
+# i'd like to go full-wayland, but i want gimp and others
+xwayland enable
+# there appears to be no way to have borders w/o titlebars
+default_border none
+default_floating_border none
+focus_follows_mouse no
+default_orientation auto
+# NB. swaymsg gaps <inner> all set <n>
+# no outer gaps b/c inner implies outer too
+gaps inner 10
+smart_gaps on
+# try "force" or "workspace" if "no" isn't my ideal
+focus_wrapping no
+
+# VARIABLES
+set $lefthead HDMI-A-2
+set $righthead HDMI-A-1
+set $super Mod4
+set $alt Mod1
+set $PgDown Next
+
+# ASSIGNMENTS (map windows to workspaces). use assign <criteria> or for_window <criteria> move to workspace <space>
+
+# blank screens after 10min inactivity
+exec swayidle -w \
+     timeout 600 'swaymsg "output * dpms off"' \
+     resume 'swaymsg "output * dpms on"' \
+
+# INPUTS
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# the string following `input` is the Identifier as shown in swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+# all keyboards currently have the same options
+
+input "1423:37904:KINESIS_CORPORATION_KB800HM_Kinesis_Freestyle2_for_Mac" {
+    repeat_delay 150
+    repeat_rate 100
+    xkb_layout us
+    xkb_variant dvp
+    xkb_options caps:swapescape
+}
+
+input "1:1:AT_Translated_Set_2_keyboard" {
+    repeat_delay 150
+    repeat_rate 100
+    xkb_layout us
+    xkb_variant dvp
+    xkb_options caps:swapescape
+}
+
+input "1149:8257:Kensington_Slimblade_Trackball" {
+    left_handed enabled
+}
+
+# binds follow kakoune's style: the inclusion of alt does the opposite of the non-alt variant.
+# TODO: currently $super+button1 moves a window rather than floating it. $super+button2 does nothing.
+bindsym {
+        $super+h focus left
+        $super+j focus down
+        $super+k focus up
+        $super+l focus right
+        $super+Shift+h move left
+        $super+Shift+j move down
+        $super+Shift+k move up
+        $super+Shift+l move right
+        $super+Ctrl+h resize shrink width 10px
+        $super+Ctrl+l resize grow width 10px
+        $super+Ctrl+j resize shrink height 10px
+        $super+Ctrl+k resize grow height 10px
+        # TODO: _ resize shrink|grow width|height [<amount> [px|ppt]]
+        $super+b split h
+        $super+v split v
+        $super+s layout stacking
+        $super+w layout tabbed
+        $super+f fullscreen toggle
+        # TODO: this doesn't do what i'd imagined
+        $super+Shift+f fullscreen toggle global
+        $super+t floating toggle
+        $super+a focus parent
+        $super+$alt+a focus child
+        $super+Shift+c kill
+        # TODO: Shift+$alt+c kill all in focused workspace
+        $super+Shift+Escape exit
+        $super+F12 reload
+
+        # TODO: use wofi to dynamically rename workspace <old name> to <new name>
+        $super+Ampersand   workspace 1
+        $super+BracketLeft workspace 2
+        $super+BraceLeft   workspace 3
+        $super+BraceRight  workspace 4
+        $super+ParenLeft   workspace 5
+        $super+F8   workspace ⦰
+        $super+Shift+Ampersand   move container to workspace 1
+        $super+Shift+BracketLeft move container to workspace 2
+        $super+Shift+BraceLeft   move container to workspace 3
+        $super+Shift+BraceRight  move container to workspace 4
+        $super+Shift+ParenLeft   move container to workspace 5
+        $super+Shift+F8   move container to workspace ⦰
+
+        # switching to a workspace should mean putting it in this display. however,
+        # currently sway does not support this behavior. therefore i'll move workspaces to
+        # outputs
+        $super+$alt+h move workspace to output left
+        $super+$alt+l move workspace to output right
+
+        $super+F1 focus output eDP-1
+        $super+F2 focus output $lefthead
+        $super+F3 focus output $righthead
+
+        $super+Shift+F1 move container to output eDP-1
+        $super+Shift+F2 move container to output $lefthead
+        $super+Shift+F3 move container to output $righthead
+
+        # TODO: replace exec calls by kmonad?
+        # TODO: make Return [title="kitty"] focus, or if no such window, then exec kitty. i can exec swaymsg -t get_tree to see if there's a kitty open. (check property app_id.)
+        $super+Return exec kitty -1
+        $super+shift+Return exec kitty -1 connectkak
+        # TODO: dialogize ow to be like wofi but specify an argument in addition to the program?
+        $super+d exec wofi -GibSdrun -l2 -H100 -p "run"
+        $super+c exec gucharmap
+        $super+$alt+$PgDown exec kanshi-hack
+        # $super+$alt+p exec gpicview
+        $super+shift+p exec zathura
+        $super+p exec mcomix3
+        # vlc and mplayer are not wayland-native. mpv is, though.
+        # $super+v exec vlc
+
+        # TODO:
+        # $alt+l selects layout via wofi
+        # $alt+a selects window by title via wofi
+        $super+$PgDown exec pavucontrol
+}
+
+# TODO: these don't work. also, having the latter as hex value begot the warning about that statement overriding itself
+# TODO: interpret XF86AudioPlay and XF86AudioPause (as seen in wev) to handle Soundcore Liberty Air 2 taps
+bindcode {
+    269025026 exec brightnessctl s +10%
+    269025027 exec brightnessctl --min-value=1 s 10%
+}
+
+bindsym --whole-window $super+button4 opacity plus 0.1
+bindsym --whole-window $super+button5 opacity minus 0.1
+
+# i don't need to bindswitch lid:off to blank eDP-1
+
+# Resize them with right mouse button + $super.
+# Despite the name, also works for non-floating windows.
+# Change "normal" to "inverse" to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $super normal
+
+set $barbg #282a36
+set $statuscolor #f8f8f8
+
+# status bar. see sway-bar(5)
+bar {
+    tray_output none
+    position top
+    separator_symbol "•"
+    font pango:CaskaydiaCove Nerd Font 9
+    mode hide
+    # disable clicking on workspace buttons
+    bindsym button1 nop
+    # swaybar updates when status_command prints a new line to stdout.
+    # the status takes only one section of the whole swaybar
+    status_command while echo "$(date +'%a %b %d %k:%M') $(powerline)"; do sleep 60; done
+    status_padding 0
+    colors {
+        statusline $statuscolor
+        background $barbg
+        # the workspace containing the focused container (orange)
+        focused_workspace  $barbg $barbg #ff7400
+        # visible but not focused workspaces
+        active_workspace   $barbg $barbg $statuscolor
+        # non-empty workspaces that aren't currently displayed
+        inactive_workspace $barbg $barbg $statuscolor
+        urgent_workspace   $barbg $barbg #ffd800
+    }
+}
+
+exec gammastep -l 32.98467:-96.67434
+# currently kanshi doesn't always work: sometimes it fails to recognize the multihead profile.
+# exec kanshi
+exec dunst
+exec battery-monitor

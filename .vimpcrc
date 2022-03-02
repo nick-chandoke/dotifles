@@ -1,0 +1,13 @@
+set expand-artists
+set smartcase
+set incsearch
+set ignorecase
+map s <Nop>
+set windows lists,browse,playlist
+set window browse
+hi song default black
+hi id default black
+hi status yellow black
+hi tab yellow black
+hi current default yellow
+hi progress default cyan
