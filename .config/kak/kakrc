@@ -74,11 +74,8 @@ define-command wdb -docstring "write then delete buffer" "w;db"
 add-highlighter global/ wrap -word
 add-highlighter global/ number-lines -relative
 
-# lisp, and yaml have 2 character tabs
-hook global WinSetOption filetype=(lisp|yaml|scheme|fnl|racket|janet|lisp) %{
-  set-option window tabstop 2
-  set-option window indentwidth 2
-}
+set-option global tabstop 2
+set-option global indentwidth 2
 
 # TODO: should this be buffer-specific rather than window?
 hook global WinSetOption filetype=(asciidoc) %{
@@ -120,6 +117,10 @@ hook global WinSetOption filetype=(racket|scheme|lisp|fnl) %{
   enable-auto-pairs
   # rainbow # takes too much time on large files. do manually as needed.
   map -docstring "update rainbow" window user r "':rainbow<ret>"
+}
+
+hook global WinSetOption filetype=racket %{
+    map global insert <a-o> "(only-in "
 }
 
 # TODO: learn LSP, then use.
