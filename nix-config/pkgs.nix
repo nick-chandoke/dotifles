@@ -1,5 +1,7 @@
 pkgs: with pkgs; [
 
+openssl
+
 ## hw
 # usbutils pciutils #lspci
 # hwinfo #strictly better than lshw?
@@ -75,18 +77,16 @@ wget curl wpa_supplicant wavemon traceroute macchanger nettools netcat ngrep nma
 ## admin tools or low-level
 lsof nix-index
 (import ./kmonad.nix pkgs) # see also nixpkg keyfezz, which manipulates keyboard drivers' keycode translation tables
-killall
 
 ## utilities
 file
 rlwrap
 # fcitx-configtool
 youtube-dl
-htop p7zip
+htop
+p7zip
 ttyplot
-gnome3.zenity gtdialog
 ncdu # rather than baobab
-# bluez
 obexfs obexftp openobex
 pamix #ponymix
 pavucontrol
@@ -110,9 +110,13 @@ patchelf binutils
 
 ## general everyday applications
 lsd
-kitty tmux
-gnupg cool-retro-term
-pwgen hexio theharvester
+kitty
+tmux # just in case i do any remote work
+gnupg
+cool-retro-term
+pwgen
+# hexio
+# theharvester
 brightnessctl
 git
 maxima # cf julia + jupyter
@@ -148,8 +152,8 @@ ripgrep # command name is rg. pt does nothing, has no help nor man nor info. hav
 aria uget hexchat
 
 gimp inkscape #image
-libreoffice
-lyx # texmaker texstudio gummi #latex
+# libreoffice
+# lyx # texmaker texstudio gummi #latex
 massren # emv "mass rename" filepaths
 # NB. audio cds cannot be used with dd b/c their logical format is not a filesystem, but instead a record-like thing.
 abcde # rip audio cds. like crip, is a script (though bash instead of perl) that seems to use other _actual_ programs
@@ -167,14 +171,13 @@ sqlite
 ## truly interactive dev envs: the next generation of editor
 # lighttable
 micro # smol tui editor. made to obviate nano. written in go, scriptable in many languages including pony & lua.
-bviplus
 fzf
 kakoune
 kak-lsp
 moe # 8-bit clean editor (gnu)
 ht # editor of text, binary, and particularly, executables
 pev # toolkit (many programs) for working with portable executables (viz windows exe, dll)
-lief
+lief # wtf is this?
 #processing #does not install. Says to set oraclejdk.accept_license = true;, but that attribute does not exist
 
 ## hex editors
@@ -187,7 +190,8 @@ dhex #curses. features diff mode and handy hex calculator.
      #better than hexcurse, which is better than hexedit
 okteta #gui
 hecate #curses. very cool, novel ui, showing chars adjacent to each their corresponding hex value. no man nor --help, but simple in-editor help via pressing '?'
-heme hyx tweak watchexec wxhexeditor
+tweak # TODO: cf ht. tweak is lazy. is ht?
+watchexec # execute commands upon file changes
 
 ## hex dumpers
 hexd xxd
@@ -197,7 +201,7 @@ vlc mpd flac
 # googleearth # currently 404 on dl
 ympd # simple C mpd client
 vimpc zathura # zathura is for pdfs, possibly in addition to other formats
-gnash # flash player
+# gnash # flash player
 mcomix3 # TODO: make or find reliable, efficient, minimalist alternative
 mpv     # mpv was forked from mplayer long ago to rebase onto ffmpeg, clean code, reduce, modernize, and become scriptable (via lua among others.) wayland-native.
 wallutils # for both X and wayland
@@ -214,7 +218,6 @@ luakit
 nyxt
 w3m
 # these may be libs, not exes, though that contrasts the nixos docs: dleyna-server python27Packages.weboob python27Packages.twill perl528Packages.HTMLClean
-openssl
 
 ## diffs
 # diff-pdf diffpdf #for pdfs

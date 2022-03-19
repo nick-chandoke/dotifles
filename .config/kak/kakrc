@@ -120,7 +120,10 @@ hook global WinSetOption filetype=(racket|scheme|lisp|fnl) %{
 }
 
 hook global WinSetOption filetype=racket %{
-    map global insert <a-o> "(only-in "
+# NEXT: open bug report: selection, though still highlighted in kak's buffer/gui, %val{selection} is '#' and %val{selection_length} is 1
+#  map buffer insert <a-\> %sh{if test $kak_selection_length -eq 1; then printf "λ"; else printf "\"λ (<esc>;a <esc>hi\""; fi}
+# map buffer insert <a-\> %{<esc>"lyi}%sh{printf $kak_reg_l} # also, how to put two strings together like this without a space? furthermore, how to contat strings, since map accepts only one string?
+  map buffer insert <a-o> "(only-in "
 }
 
 # TODO: learn LSP, then use.
@@ -161,15 +164,6 @@ hook global WinSetOption filetype=racket %{
 
 # auto indent does bizarre things at unpredictable times; rely instead on filetype-specific formatter(s)
 # enable-auto-indent
-
-# tumx uses alt+movement keys; map to user map.
-# i'm no longer using tmux. still, these keys may be used by sway in the future,
-# so i'll keep these binds. default binds still work.
-map global user -docstring "join lines" j <a-j> # %{<a-j>gll"_d} # is there a better way to do this? i just want to join but omit the space between joined lines.
-map global user -docstring "filter selections by regex" k <a-k>
-map global user -docstring "select to beginning of line" h <a-h>
-map global user -docstring "select to end of line" l <a-l>
-map global user -docstring "inverse filter selections by regex" K <a-K>
 
 # align columns
 map global user a "<a-s><S>\h<ret><a-;><&>" -docstring "align columns in selection"

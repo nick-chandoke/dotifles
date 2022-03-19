@@ -35,14 +35,13 @@
 # i'd like to go full-wayland, but i want gimp and others
 xwayland enable
 # there appears to be no way to have borders w/o titlebars
-default_border none
+default_border pixel 1
 default_floating_border none
 focus_follows_mouse no
 default_orientation auto
 # NB. swaymsg gaps <inner> all set <n>
 # no outer gaps b/c inner implies outer too
 gaps inner 10
-smart_gaps on
 # try "force" or "workspace" if "no" isn't my ideal
 focus_wrapping no
 
@@ -117,7 +116,6 @@ bindsym {
         $super+Shift+Escape exit
         $super+F12 reload
 
-        # TODO: use wofi to dynamically rename workspace <old name> to <new name>
         $super+Ampersand   workspace 1
         $super+BracketLeft workspace 2
         $super+BraceLeft   workspace 3
@@ -129,7 +127,8 @@ bindsym {
         $super+Shift+BraceLeft   move container to workspace 3
         $super+Shift+BraceRight  move container to workspace 4
         $super+Shift+ParenLeft   move container to workspace 5
-        $super+Shift+F8   move container to workspace ⦰
+        $super+Shift+F8          move container to workspace ⦰
+        $super+F9 exec select-workspace
 
         # switching to a workspace should mean putting it in this display. however,
         # currently sway does not support this behavior. therefore i'll move workspaces to
@@ -150,9 +149,9 @@ bindsym {
         $super+Return exec kitty -1
         $super+shift+Return exec kitty -1 connectkak
         # TODO: dialogize ow to be like wofi but specify an argument in addition to the program?
-        $super+d exec wofi -GibSdrun -l2 -H100 -p "run"
+        $super+d exec wofi -GibSrun -l2 -H100 -p "run"
         $super+c exec gucharmap
-        $super+$alt+$PgDown exec kanshi-hack
+        $super+$alt+$PgDown exec set-monitors
         # $super+$alt+p exec gpicview
         $super+shift+p exec zathura
         $super+p exec mcomix3

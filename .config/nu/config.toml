@@ -1,0 +1,47 @@
+# see https://mvolkmann.github.io/blog/nushell/
+# TODO: how to remove welcome message?
+
+# TOP LEVEL OPTIONS. PUT BEFORE ANY TABLES (SECTIONS).
+# disable_table_indexes = true
+path = [ "/home/nic/.cabal/bin"
+       , "/home/nic/.local/bin"
+       , "/home/nic/programming"
+       , "/home/nic/node_modules/taiko/bin"
+       , "/home/nic/.npm/bin"
+       , "/home/nic/.luarocks/bin"
+       , "/nix/store/*-user-environment/bin"
+       , "/home/nic/.racket/7.5/bin"
+       ]
+startup = [ "source ~/.config/nu/aliases.nu" # why does this do nothing but running in terminal works?
+          # OK, like things seem fine without this, so do i need it or what?
+          # , 'env | each { |it| echo $"let-env ($it.name) = '($it.raw)'" } | str collect (char nl)'
+          # , def nohidden [] { echo "-not -regex '.*/[.].*' -regextype egrep" } # for find(1). fucking quoting again
+          ]
+prompt = "echo (pwd) ' ║ '" # command whose output is used for the prompt
+table_mode = "rounded" # "light" "none"
+
+# "if nu is your login shell then there's no parent shell whence to inherit envars"
+# seriously, $HOME and other envars can't be used? wtf?
+[env]
+# PATH = "$HOME/.cabal/bin:$HOME/.local/bin:$HOME/programming:$HOME/node_modules/taiko/bin:$HOME/.npm/bin:$PATH:$HOME/.luarocks/bin:/nix/store/*-user-environment/bin:$HOME/.racket/7.5/bin"
+EDITOR = "kak"
+GIT_EDITOR = "kak"
+VISUAL = "kitty kak"
+KAKOUNE_CONFIG_DIR = "/home/nic/.config/kak/"
+LESSOPEN = "| src-hilite-lesspipe.sh %s"
+LESS = "-Ri"
+TAIKO_SKIP_CHROMIUM_DOWNLOAD = "true"
+TAIKO_BROWSER_PATH = "/nix/store/2q6ky64m7nvv56ihk4fmsnki2prfm5lh-system-path/bin/chromium"
+LUA_PATH = "/home/nic/.luarocks/share/lua/5.3/?.lua;/home/nic/.luarocks/share/lua/5.3/?/init.lua;?;?.lua;/home/nic/.luarocks/?"
+LUA_CPATH = "/home/nic/.luarocks/lib/lua/5.3/?.so"
+WDEV = "wlp64s0"
+RIPGREP_CONFIG_PATH = "/home/nic/.rgcfg"
+CHICKEN_INSTALL_REPOSITORY = "/home/nic/.chicken"
+CHICKEN_REPOSITORY_PATH = "/nix/store/gc17bf0hbjhyzm5r8xfnx157iq30wcms-chicken-5.2.0/lib/chicken/11/:/home/nic/.chicken" # last path is $CHICKEN_INSTALL_REPOSITORY
+# PLTCOLLECTS="/home/nic/.racket/pkgs" # just breaks things
+# if [ -e /home/nic/.nix-profile/etc/profile.d/nix.sh ]; then . /home/nic/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# PAGER="kak" # affects man(1), so not using
+
+# [textview]
+# bools: grid header line_numbers true_color
+# theme : String

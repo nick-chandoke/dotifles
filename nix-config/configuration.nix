@@ -72,10 +72,13 @@ services = {
 
 virtualisation = {
     # anbox.enable = true; # android virtualization. currently broken.
-    virtualbox.host.enable = true;
+    virtualbox.host.enable = true; # enable virtualbox
 };
 
 users = {
+    # for interactive use. applies to VTs, which shouldn't be problematic,
+    # because scripts should use #!/usr/bin/env bash or #!/bin/sh anyway
+    defaultUserShell = pkgs.nushell;
     groups = {uinput = {};};
     extraGroups.vboxusers.members = [ "nic" ];
     # yes, the full form is users.users.<user>
@@ -88,7 +91,7 @@ users = {
 # determines the nixos release with which your system is to be
 # compatible. avoids breaking some software. change only
 # after the nixos release notes say you should.
-system.stateVersion = "21.05";
+system.stateVersion = "21.11";
 
 fileSystems = {
   "/mnt/exthdd" =
@@ -156,7 +159,6 @@ programs.sway = {
         wl-clipboard
         waybar
         gammastep   # like redshift. only for wayland compositors that support wlroots
-        # kanshi    # reconfigure displays on display availability [bool] events. doesn't work.
         wofi        # select string from list with autocompletion
         dunst       # notification daemon
         # vimiv     # marked as broken
@@ -171,7 +173,11 @@ i18n.inputMethod = {
 
 # i'm no longer using any programs from koi. code left here as template for including other additional channels.
 # environment.systemPackages = (import ./pkgs.nix) pkgs (import <koi> {}); # after # nix-channel --add https://nixos.org/channels/nixos-19.03 koi; nix-channel --update
-environment.systemPackages = (import ./pkgs.nix pkgs); # the result of import ./pkgs.nix is a unary function; pkgs is its argument.
+environment = {
+    # non-interactive use. at /bin/sh
+    binsh = "${pkgs.dash}/bin/dash";
+    systemPackages = (import ./pkgs.nix pkgs); # the result of import ./pkgs.nix is a unary function; pkgs is its argument.
+};
 
 nixpkgs.config = {
   permittedInsecurePackages = [ "ffmpeg-2.8.17" ]; # TODO: check-out gstreamer, too.
