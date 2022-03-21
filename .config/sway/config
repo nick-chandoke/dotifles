@@ -15,13 +15,10 @@
 # $super: super. $alt: Alt. ctrl? shift?
 
 # TODO:
-# * use `swap container with` somewhere
-# * maybe i should include window borders for urgency events. remember that smart_borders is a thing.
-# * make interactively editable list of workspaces, including their names
+# $super+tab moves to last-focused window, or if no such window (b/c it's been closed,) then move to nearest window in tree. like back_and_forth for containers. i can subscribe to event type 3 (window) for when a window is focused; then i can set the window whose mark is A to B, and mark the window that triggered the event A. the toggle command will select whichever of A or B is not focused.
 # like <C-h>q in tmux (or maybe even better: f in vimium,) i want to choose windows by id rather than navigating across Containers.
-# following windows are floating: gimp, zenity, gtdialog, matplotlib
-# enable grid layout
-# $super+tab moves to last-focused window, or if no such window (b/c it's been closed,) then move to nearest window in tree. like back_and_forth for containers.
+# following windows are floating: gimp, matplotlib
+# bind to key that sets grid layout
 
 # see sway(5) for complete reference. (no need to look at i3 docs!)
 # all state and external functionality (cf data, which is owned by sway) may be stored
@@ -145,7 +142,6 @@ bindsym {
         $super+Shift+F3 move container to output $righthead
 
         # TODO: replace exec calls by kmonad?
-        # TODO: make Return [title="kitty"] focus, or if no such window, then exec kitty. i can exec swaymsg -t get_tree to see if there's a kitty open. (check property app_id.)
         $super+Return exec kitty -1
         $super+shift+Return exec kitty -1 connectkak
         # TODO: dialogize ow to be like wofi but specify an argument in addition to the program?

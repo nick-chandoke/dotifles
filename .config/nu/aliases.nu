@@ -20,12 +20,12 @@ alias newsboat = newsboat -r
 alias luarocks = luarocks --local
 alias recaudio = ffmpeg -loglevel error -f pulse -i alsa_output.pci-0000_00_1b.0.analog-stereo.monitor -c:a libvorbis
 alias left-hand = xinput set-button-map "Kensington Slimblade Trackball" 3 2 1
-alias wo = sudo rfkill unblock wifi; sudo rfkill block bluetooth
-alias bo = sudo rfkill block wifi; sudo rfkill unblock bluetooth
+alias wo = (sudo rfkill unblock wifi; sudo rfkill block bluetooth)
+alias bo = (sudo rfkill block wifi; sudo rfkill unblock bluetooth)
 alias by = sudo rfkill unblock bluetooth
 alias wy = sudo rfkill unblock wifi
 alias bn = sudo rfkill block bluetooth
-alias wn = sudo rfkill block wifi
+# alias wn = sudo rfkill block wifi
 
 alias copy-playlists-to-ext-disk = sudo copy-playlists-to-ext-disk -m /home/nic/music -p /home/nic/.playlists
 
